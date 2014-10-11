@@ -5,12 +5,12 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import com.github.opensourcefieldlinguistics.fielddb.Config;
 import com.github.opensourcefieldlinguistics.fielddb.model.SubExperimentBlock;
 
 import android.app.IntentService;
 import android.content.Intent;
 import android.util.Log;
-import ca.ilanguage.oprime.Config;
 
 public class SubExperimentToJson extends IntentService {
 

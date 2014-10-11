@@ -5,6 +5,8 @@ import java.io.File;
 import com.github.opensourcefieldlinguistics.datacollection.AudioRecorder;
 import com.github.opensourcefieldlinguistics.datacollection.TakePicture;
 import com.github.opensourcefieldlinguistics.datacollection.VideoRecorder;
+import com.github.opensourcefieldlinguistics.fielddb.Config;
+import com.github.opensourcefieldlinguistics.fielddb.storybook.ui.StoryBookSubExperiment;
 
 import android.app.Activity;
 import android.content.Intent;
@@ -12,9 +14,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.FragmentActivity;
 import android.util.Log;
-import ca.ilanguage.oprime.Config;
 import ca.ilanguage.oprime.R;
-import ca.ilanguage.oprime.storybook.StoryBookSubExperiment;
 
 /**
  * An activity representing a list of Experiments. This activity has different

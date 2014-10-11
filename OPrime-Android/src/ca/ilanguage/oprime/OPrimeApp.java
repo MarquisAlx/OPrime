@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.github.opensourcefieldlinguistics.fielddb.Config;
 import com.github.opensourcefieldlinguistics.fielddb.model.Experiment;
 import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
 import com.github.opensourcefieldlinguistics.fielddb.model.SubExperimentBlock;
