@@ -1,4 +1,4 @@
-package ca.ilanguage.oprime.model;
+package ca.ilanguage.oprime;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -7,12 +7,16 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.github.opensourcefieldlinguistics.fielddb.model.Experiment;
+import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
+import com.github.opensourcefieldlinguistics.fielddb.model.SubExperimentBlock;
+import com.github.opensourcefieldlinguistics.fielddb.model.TwoImageStimulus;
+
 import android.app.Application;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.util.Log;
 import android.widget.Toast;
-import ca.ilanguage.oprime.Config;
 import ca.ilanguage.oprime.R;
 
 public abstract class OPrimeApp extends Application {

@@ -69,22 +69,22 @@
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.ui.SubExperiment"
+            android:name="com.github.opensourcefieldlinguistics.fielddb.experimentation.uii.SubExperiment"
             android:exported="false"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.storybook.StoryBookSubExperiment"
+            android:name="com.github.opensourcefieldlinguistics.fielddb.experimentation.ui.StoryBookSubExperiment"
             android:exported="false"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.ui.HTML5GameActivity"
+            android:name="com.github.opensourcefieldlinguistics.javascript.HTML5GameActivity"
             android:exported="false"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.datacollection.TakePicture"
+            android:name="com.github.opensourcefieldlinguistics.datacollection.TakePicture"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:exported="false"
             android:label="@string/app_name" >
@@ -92,11 +92,11 @@
             <!-- ca.ilanguage.oprime.intent.action.TAKE_PICTURE -->
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.datacollection.StopAudioRecorder"
+            android:name="com.github.opensourcefieldlinguistics.datacollection.StopAudioRecorder"
             android:label="@string/app_name" >
         </activity>
         <activity
-            android:name="ca.ilanguage.oprime.datacollection.VideoRecorder"
+            android:name="com.github.opensourcefieldlinguistics.datacollection.VideoRecorder"
             android:configChanges="orientation|keyboardHidden|screenSize"
             android:label="@string/app_name" >
             <intent-filter>
@@ -107,11 +107,11 @@
         </activity>
 
         <!-- All services must be listed in the manifest before they can be used -->
-        <service android:name="ca.ilanguage.oprime.datacollection.SubExperimentToJson" >
+        <service android:name="com.github.opensourcefieldlinguistics.datacollection.SubExperimentToJson" >
 
             <!-- ca.ilanguage.oprime.intent.action.SAVE_SUB_EXPERIMENT_JSON -->
         </service>
-        <service android:name="ca.ilanguage.oprime.datacollection.AudioRecorder" >
+        <service android:name="com.github.opensourcefieldlinguistics.datacollection.AudioRecorder" >
             <intent-filter>
                 <action android:name="ca.ilanguage.oprime.intent.action.START_AUDIO_RECORDING_SERVICE" />
 
@@ -119,11 +119,6 @@
             </intent-filter>
         </service>
 
-        <provider
-            android:name="ca.ilanguage.oprime.database.UserContentProvider"
-            android:authorities="ca.ilanguage.oprime.user"
-            android:exported="false" >
-        </provider>
     </application>
 
 </manifest>

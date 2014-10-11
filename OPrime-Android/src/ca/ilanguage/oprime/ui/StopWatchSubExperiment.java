@@ -21,6 +21,11 @@ package ca.ilanguage.oprime.ui;
 
 import java.util.ArrayList;
 
+import com.github.opensourcefieldlinguistics.datacollection.AudioRecorder;
+import com.github.opensourcefieldlinguistics.datacollection.VideoRecorderAsyncTask;
+import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
+import com.github.opensourcefieldlinguistics.fielddb.model.SubExperimentBlock;
+
 import android.app.Activity;
 import android.content.Intent;
 import android.content.res.Configuration;
@@ -36,12 +41,8 @@ import android.widget.Chronometer;
 import android.widget.TextView;
 import android.widget.VideoView;
 import ca.ilanguage.oprime.Config;
+import ca.ilanguage.oprime.OPrimeApp;
 import ca.ilanguage.oprime.R;
-import ca.ilanguage.oprime.datacollection.AudioRecorder;
-import ca.ilanguage.oprime.datacollection.VideoRecorderAsyncTask;
-import ca.ilanguage.oprime.model.OPrimeApp;
-import ca.ilanguage.oprime.model.Stimulus;
-import ca.ilanguage.oprime.model.SubExperimentBlock;
 
 public class StopWatchSubExperiment extends Activity implements SurfaceHolder.Callback {
   protected static String                 TAG            = "StopWatchSubExperiment";

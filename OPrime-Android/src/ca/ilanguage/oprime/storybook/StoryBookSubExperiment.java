@@ -20,6 +20,10 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Locale;
 
+import com.github.opensourcefieldlinguistics.datacollection.VideoRecorder;
+import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
+import com.github.opensourcefieldlinguistics.fielddb.model.Touch;
+
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
@@ -34,9 +38,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import ca.ilanguage.oprime.Config;
 import ca.ilanguage.oprime.R;
-import ca.ilanguage.oprime.datacollection.VideoRecorder;
-import ca.ilanguage.oprime.model.Stimulus;
-import ca.ilanguage.oprime.model.Touch;
 
 public class StoryBookSubExperiment extends VideoRecorder implements View.OnTouchListener {
 
@@ -45,7 +46,7 @@ public class StoryBookSubExperiment extends VideoRecorder implements View.OnTouc
     Bitmap b = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
     b.eraseColor(0xFFFFFFFF);
     Canvas c = new Canvas(b);
-    Drawable d = StoryBookSubExperiment.this.getResources().getDrawable(StoryBookSubExperiment.this.mStimuli.get(index).getImageFileId());
+    Drawable d = StoryBookSubExperiment.this.getResources().getDrawable(this.mStimuli.get(index).getImageFileId());
 
     int margin = StoryBookSubExperiment.this.mBorderSize;
     int border = StoryBookSubExperiment.this.mBorderSize;
@@ -81,14 +82,14 @@ public class StoryBookSubExperiment extends VideoRecorder implements View.OnTouc
   }
 
   public int getBitmapCount() {
-    return StoryBookSubExperiment.this.mStimuli.size();
+    return this.mStimuli.size();
   }
 
   public void playAudioStimuli() {
-    if (StoryBookSubExperiment.this.mCurrentStimuliIndex >= StoryBookSubExperiment.this.mStimuli.size()) {
+    if (StoryBookSubExperiment.this.mCurrentStimuliIndex >= this.mStimuli.size()) {
       return;
     }
-    int audioStimuliResource = StoryBookSubExperiment.this.mStimuli.get(StoryBookSubExperiment.this.mCurrentStimuliIndex).getImageFileId();
+    int audioStimuliResource = this.mStimuli.get(StoryBookSubExperiment.this.mCurrentStimuliIndex).getImageFileId();
     try {
       Thread.sleep(StoryBookSubExperiment.this.mDelayAudioMilisecondsAfterImageStimuli);
     } catch (InterruptedException e1) {
@@ -125,8 +126,8 @@ public class StoryBookSubExperiment extends VideoRecorder implements View.OnTouc
   }
 
   public void recordTouchPoint(Touch touch, int stimuli) {
-    if (stimuli < StoryBookSubExperiment.this.mStimuli.size()) {
-      StoryBookSubExperiment.this.mStimuli.get(stimuli).touches.add(touch);
+    if (stimuli < this.mStimuli.size()) {
+      this.mStimuli.get(stimuli).touches.add(touch);
     }
     // Toast.makeText(getApplicationContext(), touch.x + ":" + touch.y,
     // Toast.LENGTH_LONG).show();
