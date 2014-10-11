@@ -50,7 +50,7 @@ public class DataCollectionContent {
     addItem(new DataCollectionItem("Audio", "Audio Data", R.layout.fragment_experiment_detail));
     addItem(new DataCollectionItem("Touch", "Touch Data", R.layout.fragment_experiment_detail));
 
-    addItem(new DataCollectionItem("Storybook", "Storybook Experiment", R.layout.fragment_page_curl));
+    addItem(new DataCollectionItem("Storybook", "Storybook Experiment", R.layout.fragment_storybook));
     addItem(new DataCollectionItem("HTML5", "HML5 Experiment", R.layout.fragment_html5webview));
     addItem(new DataCollectionItem("Gamified", "Gamified Experiment", R.layout.fragment_experiment_detail));
     addItem(new DataCollectionItem("Gravity", "Gravity Game", R.layout.fragment_experiment_detail));
