@@ -3,15 +3,13 @@ package ca.ilanguage.oprime.tutorial;
 import java.io.Serializable;
 import java.util.ArrayList;
 
-import com.github.opensourcefieldlinguistics.fielddb.R;
-
 public class Stimulus implements Serializable {
 
   private static final long serialVersionUID       = -4023355491498842498L;
-  protected int             audioFileId            = R.raw.gammatone;
+  protected int             audioFileId            ;
   protected String          audioFilePath          = "";
   protected long            audioOffset            = 0;
-  protected int             imageFileId            = R.drawable.speech_bubbles;
+  protected int             imageFileId            = R.drawable.androids_experimenter_kids;
   protected String          imageFilePath          = "";
 
   protected String          label                  = "";
@@ -20,7 +18,7 @@ public class Stimulus implements Serializable {
 
   protected long            startTime              = 0;
   protected long            totalReactionTime      = 0;
-  public ArrayList<Touch>   touches                = new ArrayList<Touch>();
+  public ArrayList<Object>   touches                = new ArrayList<Object>();
   protected String          videoFilePath          = "";
 
   public Stimulus() {
@@ -51,7 +49,7 @@ public class Stimulus implements Serializable {
     this.videoFilePath = videoFilePath;
   }
 
-  public Stimulus(String audioFilePath, String imageFilePath, String videoFilePath, ArrayList<Touch> touches,
+  public Stimulus(String audioFilePath, String imageFilePath, String videoFilePath, ArrayList<Object> touches,
       long totalReactionTime, long reactionTimePostOffset) {
     super();
     this.audioFilePath = audioFilePath;
@@ -97,7 +95,7 @@ public class Stimulus implements Serializable {
     return this.totalReactionTime;
   }
 
-  public ArrayList<Touch> getTouches() {
+  public ArrayList<Object> getObjectes() {
     return this.touches;
   }
 
@@ -141,7 +139,7 @@ public class Stimulus implements Serializable {
     this.totalReactionTime = totalReactionTime;
   }
 
-  public void setTouches(ArrayList<Touch> touches) {
+  public void setObjectes(ArrayList<Object> touches) {
     this.touches = touches;
   }
 

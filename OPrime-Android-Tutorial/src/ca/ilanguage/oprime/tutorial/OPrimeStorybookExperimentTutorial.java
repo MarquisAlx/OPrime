@@ -5,146 +5,60 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
-import ca.ilanguage.oprime.Config;
-import ca.ilanguage.oprime.storybook.StoryBookSubExperiment;
-import ca.ilanguage.oprime.tutorial.R;
-import ca.ilanguage.oprime.model.Stimulus;
-import ca.ilanguage.oprime.preferences.PreferenceConstants;
-import ca.ilanguage.oprime.preferences.SetPreferencesActivity;
-
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.content.res.TypedArray;
 import android.net.Uri;
 import android.os.Bundle;
-import android.os.Handler;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.widget.ImageView;
+import android.util.Log;
 import android.widget.Toast;
 
 public class OPrimeStorybookExperimentTutorial extends Activity {
   private String mParticipantId = Config.DEFAULT_PARTICIPANT_ID;
   private String mExperimentTrialHeader = "";
-  private Handler mHandlerDelayStimuli = new Handler();
   private Boolean mReplayMode = false;
   private Boolean mReplayBySubExperiments = false;
-  private String mCurrentSubExperimentLanguage = "en";
+  private String mCurrentSubExperimentLanguage = Config.FRENCH;
   public long mExperimentLaunch;
   public long mExperimentQuit;
-  public static final String OUTPUT_DIRECTORY = "/sdcard/OPrime/video/";
 
   public ArrayList<String> mSubExperimentParticipantVideos = new ArrayList<String>();
   public ArrayList<String> mParticipantsCodesCompleted = new ArrayList<String>();
-
-  private ImageView mImage;
-  private Menu mMenu;
 
   @Override
   public void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
 
-    setContentView(R.layout.fragment_video_recorder);
+    final boolean fileManagerAvailable = isIntentAvailable(this,
+       Config.INTENT_START_STORY_BOOK_SUB_EXPERIMENT);
+    if (!fileManagerAvailable) {
+      Toast
+          .makeText(
+              getApplicationContext(),
+              "To run the experiment you need the OPrime app on Google Play "
+                  + "it allows you to show your stimuli as a 'book' and records the data for you.",
+              Toast.LENGTH_LONG).show();
+      Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri
+          .parse("market://details?id=ca.ilanguage.oprime"));
+      startActivity(goToMarket);
 
-    // mImage = (ImageView) findViewById(R.id.mainimage);
-    // mImage.setImageResource(R.drawable.androids_experimenter_kids);
-    // this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-
-    if (savedInstanceState == null) {
-      Intent setupIntent = new Intent(getBaseContext(),
-          SetPreferencesActivity.class);
-      startActivityForResult(setupIntent, Config.CODE_PREPARE_TRIAL);
-
+    } else {
+      initExperiment();
+      launchExperiment();
     }
-
-  }
-
-  public boolean onCreateOptionsMenu(Menu menu) {
-    // Hold on to this
-    mMenu = menu;
-
-    // Inflate the currently selected menu XML resource.
-    MenuInflater inflater = getMenuInflater();
-    inflater.inflate(R.menu.home_menu, menu);
-
-    return true;
-  }
-
-  public boolean onOptionsItemSelected(MenuItem item) {
-    switch (item.getItemId()) {
-    // For "Title only": Examples of matching an ID with one assigned in
-    // the XML
-    case R.id.open_settings:
-
-      Intent i = new Intent(getBaseContext(), SetPreferencesActivity.class);
-      startActivity(i);
-      return true;
-
-    case R.id.result_folder:
-      final boolean fileManagerAvailable = isIntentAvailable(this,
-          "org.openintents.action.PICK_FILE");
-      if (!fileManagerAvailable) {
-        Toast
-            .makeText(
-                getApplicationContext(),
-                "To open and export recorded files or "
-                    + "draft data you can install the OI File Manager, "
-                    + "it allows you to browse your SDCARD directly on your mobile device.",
-                Toast.LENGTH_LONG).show();
-        Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri
-            .parse("market://details?id=org.openintents.filemanager"));
-        startActivity(goToMarket);
-
-      } else {
-        Intent openResults = new Intent("org.openintents.action.PICK_FILE");
-        openResults.setData(Uri.parse("file://" + Config.EXTRA_OUTPUT_DIR));
-        startActivity(openResults);
-      }
-      // Intent intentReplay = new Intent(getBaseContext(),
-      // SetPreferencesActivity.class);
-      // startActivityForResult(intentReplay, Config.REPLAY_RESULTS);
-      return true;
-    case R.id.backup_results:
-      Intent backupIntent = new Intent(getBaseContext(),
-          SetPreferencesActivity.class);
-      startActivity(backupIntent);
-      return true;
-    case R.id.issue_tracker:
-
-      Intent browserIntent = new Intent(
-          Intent.ACTION_VIEW,
-          Uri.parse("https://github.com/BilingualAphasia/AndroidBilingualAphasiaTest/issues/"));
-      startActivity(browserIntent);
-      return true;
-    default:
-      // Do nothing
-
-      break;
-    }
-
-    return false;
+    
   }
 
   private void initExperiment() {
-    SharedPreferences prefs = getSharedPreferences(
-        PreferenceConstants.PREFERENCE_NAME, MODE_PRIVATE);
-    String firstname = prefs.getString(
-        PreferenceConstants.PREFERENCE_PARTICIPANT_FIRSTNAME, "none");
-    String lastname = prefs.getString(
-        PreferenceConstants.PREFERENCE_PARTICIPANT_LASTNAME, "nobody");
-    String experimenter = prefs.getString(
-        PreferenceConstants.PREFERENCE_EXPERIEMENTER_CODE, "AA");
-    String testDayNumber = prefs.getString(
-        PreferenceConstants.PREFERENCE_TESTING_DAY_NUMBER, "0");
-    String participantNumberOnDay = prefs.getString(
-        PreferenceConstants.PREFERENCE_PARTICIPANT_NUMBER_IN_DAY, "0");
-    mReplayMode = prefs.getBoolean(
-        PreferenceConstants.PREFERENCE_REPLAY_RESULTS_MODE, false);
+    String firstname =  "none";
+    String lastname = "nobody";
+    String experimenter =  "AA";
+    String testDayNumber = "0";
+    String participantNumberOnDay ="0";
+    mReplayMode = false;
     if (mReplayMode) {
       // findVideosWithSubstring(prefs.getString(PreferenceConstants.PREFERENCE_REPLAY_PARTICIPANT_CODE,
       // ""));
@@ -180,17 +94,7 @@ public class OPrimeStorybookExperimentTutorial extends Activity {
         + ","
         + mTabletOrPaperFirst
         + ","
-        + mExperimentLaunch + "," + mExperimentQuit;
-    SharedPreferences.Editor editor = prefs.edit();
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_ID,
-        mParticipantId);
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_STARTTIME,
-        mExperimentLaunch + "");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_ENDTIME,
-        mExperimentLaunch + "");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_GROUP,
-        participantGroup + mTabletOrPaperFirst);
-    editor.commit();
+        + mExperimentLaunch + ",";
 
   }
 
@@ -265,11 +169,18 @@ public class OPrimeStorybookExperimentTutorial extends Activity {
 
   private void launchExperiment() {
     Intent intent;
-    intent = new Intent(getApplicationContext(), StoryBookSubExperiment.class);
+    intent = new Intent(Config.INTENT_START_STORY_BOOK_SUB_EXPERIMENT);
 
-    /* TODO add extra with the stimuli */
+    /* add extra with the stimuli */
     intent.putExtra(Config.EXTRA_STIMULI, initializeStimuli());
-    intent.putExtra(Config.EXTRA_LANGUAGE, Config.ENGLISH);
+    intent.putExtra(Config.EXTRA_LANGUAGE, mCurrentSubExperimentLanguage);
+    
+//    intent.putExtra(Config.EXTRA_RESULT_FILENAME, "");
+//    intent.putExtra(Config.EXTRA_TAKE_PICTURE_AT_END, "");
+//    intent.putExtra(Config.EXTRA_TWO_PAGE_STORYBOOK, "");
+//    intent.putExtra(Config.EXTRA_USE_FRONT_FACING_CAMERA, "");
+    intent.putExtra(Config.EXTRA_EXPERIMENT_TRIAL_INFORMATION, mExperimentTrialHeader);
+
     startActivity(intent);
   }
 
@@ -285,63 +196,12 @@ public class OPrimeStorybookExperimentTutorial extends Activity {
     return stimuli;
   }
 
-  private void startVideoRecorder() {
-    final boolean oprimeAvailable = isIntentAvailable(this,
-        "ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDING_SERVICE");
-    if (!oprimeAvailable) {
-      Toast
-          .makeText(
-              getApplicationContext(),
-              "To record participant video you can install the "
-                  + "OPrime Android Experimentation App, it allows your tablet to record video "
-                  + "in the background and save it to the SDCARD.",
-              Toast.LENGTH_LONG).show();
-      Intent goToMarket = new Intent(Intent.ACTION_VIEW).setData(Uri
-          .parse("market://details?id=ca.ilanguage.oprime"));
-      startActivity(goToMarket);
-
-    } else {
-      new File(OUTPUT_DIRECTORY).mkdirs();
-
-      Intent intent;
-      intent = new Intent(
-          "ca.ilanguage.oprime.intent.action.START_VIDEO_RECORDING_SERVICE");
-
-      intent.putExtra(Config.EXTRA_USE_FRONT_FACING_CAMERA, true);
-      intent.putExtra(Config.EXTRA_LANGUAGE, Config.ENGLISH);
-      intent.putExtra(Config.EXTRA_PARTICIPANT_ID, mParticipantId);
-      intent.putExtra(Config.EXTRA_OUTPUT_DIR, OUTPUT_DIRECTORY);
-      intent.putExtra(Config.EXTRA_EXPERIMENT_TRIAL_INFORMATION,
-          mExperimentTrialHeader);
-
-      startActivityForResult(intent, Config.CODE_EXPERIMENT_COMPLETED);
-    }
-  }
-
-  private void stopVideoRecorder() {
-    Intent i = new Intent(
-        "ca.ilanguage.oprime.intent.action.BROADCAST_STOP_VIDEO_SERVICE");
-    sendBroadcast(i);
-  }
-
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     switch (requestCode) {
     case Config.CODE_EXPERIMENT_COMPLETED:
+      Log.d(Config.TAG, "The experiment is complete here you can do anything you want with the results. ");
       break;
-    case Config.CODE_PREPARE_TRIAL:
-      initExperiment();
-      startVideoRecorder();
-
-      /*
-       * Wait two seconds so that the video activity has time to load the
-       * camera. It will continue recording until you exit the video activity.
-       */
-      mHandlerDelayStimuli.postDelayed(new Runnable() {
-        public void run() {
-          launchExperiment();
-        }
-      }, 2000);
-      break;
+   
     default:
       break;
     }
@@ -349,38 +209,20 @@ public class OPrimeStorybookExperimentTutorial extends Activity {
 
   @Override
   public void onDestroy() {
-    // this shouldn't be needed.
+ // this shouldn't be needed.
     mExperimentQuit = System.currentTimeMillis();
+    String participantSession = mExperimentTrialHeader + mExperimentQuit +",UnknownExperimenter";
+    Log.d(Config.TAG, participantSession);
+    
     /*
-     * TODO save participant details to outfile
+     * TODO save participant session result to outfile
      */
 
     /*
      * Reset the participant details from the settings so that they wont be
      * saved on the next participant.
      */
-    SharedPreferences prefs = getSharedPreferences(
-        PreferenceConstants.PREFERENCE_NAME, MODE_PRIVATE);
-    String participantNumber = prefs.getString(
-        PreferenceConstants.PREFERENCE_PARTICIPANT_NUMBER_IN_DAY, "0");
-    int participantInt = Integer.parseInt(participantNumber);
-    participantInt++;
-    SharedPreferences.Editor editor = prefs.edit();
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_NUMBER_IN_DAY,
-        participantInt + "");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_FIRSTNAME,
-        "reset");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_LASTNAME,
-        "reset");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_ID, "");
-    editor
-        .putString(PreferenceConstants.PREFERENCE_PARTICIPANT_STARTTIME, "00");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_ENDTIME, "00");
-    editor.putString(PreferenceConstants.PREFERENCE_PARTICIPANT_GROUP, "");
-
-    editor.commit();
-
-    stopVideoRecorder();
+    
     super.onDestroy();
 
   }
