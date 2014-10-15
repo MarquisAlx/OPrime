@@ -5,6 +5,7 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
 import com.github.opensourcefieldlinguistics.fielddb.storybook.ui.StoryBookSubExperiment;
 
 import android.app.Activity;
@@ -186,7 +187,18 @@ public class OPrimeStorybookExperimentTutorial extends Activity {
     startActivity(intent);
   }
 
-
+  public ArrayList<Stimulus> initializeStimuli() {
+    ArrayList<Stimulus> stimuli = new ArrayList<Stimulus>();
+    TypedArray imgs = getResources().obtainTypedArray(R.array.image_stimuli);
+    TypedArray audio = getResources().obtainTypedArray(R.array.audio_stimuli);
+    for (int i = 0; i < imgs.length(); i++) {
+      Stimulus s = new Stimulus(imgs.getResourceId(i, -1), audio.getResourceId(
+          i, -1));
+      stimuli.add(s);
+    }
+    return stimuli;
+  }
+  
   protected void onActivityResult(int requestCode, int resultCode, Intent data) {
     switch (requestCode) {
     case Config.CODE_EXPERIMENT_COMPLETED:
