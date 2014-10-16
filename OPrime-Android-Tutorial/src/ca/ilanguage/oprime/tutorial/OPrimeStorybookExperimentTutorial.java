@@ -5,6 +5,8 @@ import java.io.FilenameFilter;
 import java.util.ArrayList;
 import java.util.List;
 
+import ca.ilanguage.oprime.jeudeverbs.R;
+
 import com.github.opensourcefieldlinguistics.fielddb.model.Stimulus;
 import com.github.opensourcefieldlinguistics.fielddb.storybook.ui.StoryBookSubExperiment;
 
